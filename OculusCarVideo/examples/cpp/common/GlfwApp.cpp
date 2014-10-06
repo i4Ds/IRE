@@ -297,7 +297,7 @@ void GlfwApp::screenshot() {
 
   static int counter = 0;
   static char buffer[128];
-  sprintf(buffer, "screenshot%05i.png", counter++);
+  sprintf(buffer, "C:/Users/oculus.car/Pictures/screenshot%05i.png", counter++);
   bool success = cv::imwrite(buffer, img);
   if (!success) {
     throw std::runtime_error("Failed to write image");
