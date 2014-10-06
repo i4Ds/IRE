@@ -110,12 +110,12 @@ public:
 	}
 
 	void updateCameraImages() {
-		CvCapture* cam = cvCaptureFromCAM(700);
+		CvCapture* cam = cvCaptureFromCAM(701);
 		cvSetCaptureProperty(cam, CV_CAP_PROP_FOURCC, CV_FOURCC('M', 'J', 'P', 'G'));
 		cvSetCaptureProperty(cam, CV_CAP_PROP_FRAME_WIDTH, CAM_IMAGE_WIDTH);
 		cvSetCaptureProperty(cam, CV_CAP_PROP_FRAME_HEIGHT, CAM_IMAGE_HEIGHT);
 
-		CvCapture* cam2 = cvCaptureFromCAM(701);
+		CvCapture* cam2 = cvCaptureFromCAM(700);
 		cvSetCaptureProperty(cam2, CV_CAP_PROP_FOURCC, CV_FOURCC('M', 'J', 'P', 'G'));
 		cvSetCaptureProperty(cam2, CV_CAP_PROP_FRAME_WIDTH, CAM_IMAGE_WIDTH);
 		cvSetCaptureProperty(cam2, CV_CAP_PROP_FRAME_HEIGHT, CAM_IMAGE_HEIGHT);
@@ -259,6 +259,9 @@ public:
 		}
 
 		switch (key) {
+		case GLFW_KEY_F12:
+			GlfwApp::screenshot();
+			break;
 		case GLFW_KEY_R:
 			ovrHmd_ResetSensor(hmd);
 			break;
