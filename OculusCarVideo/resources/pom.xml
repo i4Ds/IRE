@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.saintandreas</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  
+  <artifactId>oria-resources</artifactId>
+  <version>1.0.2</version>
+  <packaging>jar</packaging>
+
+  <scm>
+    <connection>scm:git:https://github.com/jherico/OculusRiftInActionResources.git</connection>
+    <developerConnection>scm:git:git@github.com:jherico/OculusRiftInActionResources.git</developerConnection>
+    <url>https://github.com/jherico/OculusRiftInActionResources</url>
+  </scm>
+  
+  <dependencies>
+    <!-- For the resource interface type -->
+    <dependency>
+      <groupId>org.saintandreas</groupId>
+      <artifactId>xres</artifactId>
+      <version>[1, 2)</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>java</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>.</directory>
+        <includes>
+          <include>images/sky/**</include>
+          <include>shaders/**</include>
+          <include>meshes/**</include>
+          <include>fonts/**</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

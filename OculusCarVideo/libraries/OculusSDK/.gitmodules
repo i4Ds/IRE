@@ -1,0 +1,9 @@
+[submodule "3rdParty/glfw"]
+	path = 3rdParty/glfw
+	url = https://github.com/jherico/glfw.git
+[submodule "Bindings/Java"]
+	path = Bindings/Java
+	url = https://github.com/jherico/jocular.git
+[submodule "Bindings/Python"]
+	path = Bindings/Python
+	url = https://github.com/jherico/python-ovrsdk.git
