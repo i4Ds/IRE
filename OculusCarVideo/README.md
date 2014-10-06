@@ -1,7 +1,7 @@
-OculusRiftExamples
+OculusCarVideo
 ==================
 
-Example code for using the Oculus Rift
+Example code for using the Oculus Rift forked from the project [Oculus Rift in Action](https://github.com/OculusRiftInAction/OculusRiftInAction).
 
 # Notes
 
