@@ -10,40 +10,13 @@ struct EyeArgs {
   ovrGLTexture            textures;
 };
 
-class HelloRift : public GlfwApp {
+class HelloRift : public RiftGlfwApp {
 protected:
-  ovrHmd                  hmd;
-  ovrHmdDesc              hmdDesc;
   EyeArgs                 perEyeArgs[2];
   float                   eyeHeight{ OVR_DEFAULT_EYE_HEIGHT };
   float                   ipd{ OVR_DEFAULT_IPD };
 
 public:
-  HelloRift() {
-    hmd = ovrHmd_Create(0);
-    ovrHmd_GetDesc(hmd, &hmdDesc);
-    ovrHmd_StartSensor(hmd, 0, 0);
-    windowPosition = glm::ivec2(hmdDesc.WindowsPos.x, hmdDesc.WindowsPos.y);
-    // The HMDInfo gives us the position of the Rift in desktop
-    // coordinates as well as the native resolution of the Rift
-    // display panel, but NOT the current resolution of the signal
-    // being sent to the Rift.
-    GLFWmonitor * hmdMonitor =
-        GlfwApp::getMonitorAtPosition(windowPosition);
-    if (hmdMonitor) {
-      // For the current resoltuion we must find the appropriate GLFW monitor
-      const GLFWvidmode * videoMode = glfwGetVideoMode(hmdMonitor);
-      windowSize = glm::ivec2(videoMode->width, videoMode->height);
-    } else {
-      windowSize = glm::ivec2(1280, 800);
-    }
-  }
-
-  ~HelloRift() {
-    ovrHmd_Destroy(hmd);
-    hmd = 0;
-  }
-
   virtual void createRenderingTarget() {
     glfwWindowHint(GLFW_DECORATED, 0);
 
