@@ -1,7 +1,7 @@
-OculusCarVideo
+IREMedia
 ==================
 
-Example code for using the Oculus Rift forked from the project [Oculus Rift in Action](https://github.com/OculusRiftInAction/OculusRiftInAction).
+Code for using the Oculus Rift forked from the project [Oculus Rift in Action](https://github.com/OculusRiftInAction/OculusRiftInAction).
 
 # Notes
 
@@ -13,15 +13,6 @@ for the resource DLL on windows.  In order to avoid having each executable conta
 to load them.
 
 # Instructions for building (all platforms)
-
-	git clone https://github.com/OculusCommunitySDK/OculusRiftExamples.git OculusRiftExamples
-	cd OculusRiftExamples
-	git submodule init
-	git submodule update
-	mkdir build && cd build
-	cmake .. [-G <your preferred toolset>]
-
-The "Unix Makefiles" line above needs to be modified depending on what platform you're 
 
 # CMake details
 

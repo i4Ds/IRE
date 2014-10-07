@@ -1,4 +1,4 @@
-Get started with OculusCarVideo project:
+Get started with IREVideo project:
 
 1. Install Visual Studio 13 
 2. Install cmake (http://www.cmake.org/download/)
@@ -6,7 +6,7 @@ Get started with OculusCarVideo project:
 4. Add system variable: 
 	Name: 	OpenCV_DIR 
 	Value: 	C:\opencv\build
-5. Create folder build in OculusCarVideo project root
+5. Create folder build in IREVideo project root
 6. Open cmd in folder build
 7. Run: cmake .. -G "Visual Studio 12"
 8. Run new Visual Studio Solution in folder build
