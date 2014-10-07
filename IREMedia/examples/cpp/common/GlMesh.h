@@ -14,7 +14,7 @@ struct Mesh {
   typedef std::vector<GLuint> VS;
 
   gl::MatrixStack model;
-  glm::vec3 color{1, 1, 1};
+  glm::vec3 color = glm::vec3{ 1, 1, 1 };
 
   VVec4 positions;
   VVec4 normals;
