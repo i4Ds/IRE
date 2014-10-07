@@ -110,18 +110,18 @@ public:
 	}
 
 	void updateCameraImages() {
-		CvCapture* cam = cvCaptureFromCAM(701);
-		cvSetCaptureProperty(cam, CV_CAP_PROP_FOURCC, CV_FOURCC('M', 'J', 'P', 'G'));
-		cvSetCaptureProperty(cam, CV_CAP_PROP_FRAME_WIDTH, CAM_IMAGE_WIDTH);
-		cvSetCaptureProperty(cam, CV_CAP_PROP_FRAME_HEIGHT, CAM_IMAGE_HEIGHT);
+		CvCapture* camLeft = cvCaptureFromCAM(701);
+		cvSetCaptureProperty(camLeft, CV_CAP_PROP_FOURCC, CV_FOURCC('M', 'J', 'P', 'G'));
+		cvSetCaptureProperty(camLeft, CV_CAP_PROP_FRAME_WIDTH, CAM_IMAGE_WIDTH);
+		cvSetCaptureProperty(camLeft, CV_CAP_PROP_FRAME_HEIGHT, CAM_IMAGE_HEIGHT);
 
-		CvCapture* cam2 = cvCaptureFromCAM(700);
-		cvSetCaptureProperty(cam2, CV_CAP_PROP_FOURCC, CV_FOURCC('M', 'J', 'P', 'G'));
-		cvSetCaptureProperty(cam2, CV_CAP_PROP_FRAME_WIDTH, CAM_IMAGE_WIDTH);
-		cvSetCaptureProperty(cam2, CV_CAP_PROP_FRAME_HEIGHT, CAM_IMAGE_HEIGHT);
+		CvCapture* camRight = cvCaptureFromCAM(700);
+		cvSetCaptureProperty(camRight, CV_CAP_PROP_FOURCC, CV_FOURCC('M', 'J', 'P', 'G'));
+		cvSetCaptureProperty(camRight, CV_CAP_PROP_FRAME_WIDTH, CAM_IMAGE_WIDTH);
+		cvSetCaptureProperty(camRight, CV_CAP_PROP_FRAME_HEIGHT, CAM_IMAGE_HEIGHT);
 
-		IplImage *image;
-		IplImage *image2;
+		IplImage *imageLeft;
+		IplImage *imageRight;
 		float         fps = 0.f;
 		int framecount = 0;
 		long start = Platform::elapsedMillis();
@@ -133,20 +133,20 @@ public:
 					while (!drawFinish && !terminateApp) { drawFinishCondition.wait(lck); }
 				}
 
-			image = cvQueryFrame(cam);
-			if (image) {
-				memcpy(perEyeWriteImage[0]->imageData, image->imageData, CAM_IMAGE_HEIGHT * CAM_IMAGE_WIDTH * 3);
+			imageLeft = cvQueryFrame(camLeft);
+			if (imageLeft) {
+				memcpy(perEyeWriteImage[0]->imageData, imageLeft->imageData, CAM_IMAGE_HEIGHT * CAM_IMAGE_WIDTH * 3);
 			}
 			else{
-				SAY("Didn't get image of cam 1");
+				SAY("Didn't get image of left cam");
 			}
 
-			image2 = cvQueryFrame(cam2);
-			if (image2) {
-				memcpy(perEyeWriteImage[1]->imageData, image2->imageData, CAM_IMAGE_HEIGHT * CAM_IMAGE_WIDTH * 3);
+			imageRight = cvQueryFrame(camRight);
+			if (imageRight) {
+				memcpy(perEyeWriteImage[1]->imageData, imageRight->imageData, CAM_IMAGE_HEIGHT * CAM_IMAGE_WIDTH * 3);
 			}
 			else {
-				SAY("Didn't get image of cam 2");
+				SAY("Didn't get image of right cam");
 			}
 
 			long now = Platform::elapsedMillis();
@@ -168,7 +168,8 @@ public:
 
 		}
 
-		cvReleaseCapture(&cam);
+		cvReleaseCapture(&camLeft);
+		cvReleaseCapture(&camRight);
 	}
 
 
@@ -234,9 +235,11 @@ public:
 					mv.scale(1);
 					mv.rotate(M_PI, glm::vec3(0, 1, 0));
 
+					// only load necessary part of image
 					glPixelStorei(GL_UNPACK_ROW_LENGTH, CAM_IMAGE_WIDTH);
 					glPixelStorei(GL_UNPACK_SKIP_PIXELS, 189);
 
+					// bind and load camera image
 					imageTextures[eye]->bind();
 					glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, RENDER_IMAGE_WIDTH, RENDER_IMAGE_HEIGHT, GL_BGR, GL_UNSIGNED_BYTE, perEyeReadImage[eye]->imageData);
 
