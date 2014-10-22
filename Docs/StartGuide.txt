@@ -1,0 +1,14 @@
+1. Batteries
+	-Big for the computer
+	-Small for the motors
+   Plugin a powercable to the box
+
+2. Connect the OculusRift and start it
+   Connect the controller
+
+3. Activate the motors on the roboter
+   Start the computer on the roboter
+
+4. Start the computer in the box
+   
+
