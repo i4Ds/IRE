@@ -111,6 +111,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			SendCommands(leftMotor, rightMotor, yawServo, pitchServo, rollServo);
 
+			// Calculate current hertz frequency
 			long now = ElapsedMillis();
 			++cycleCount;
 			if ((now - start) >= 500) {
@@ -181,6 +182,8 @@ void GetMotorTargets(unsigned short& leftMotor, unsigned short& rightMotor) {
 
 		short leftMotorInput = (stickY + stickX) / 2;
 		short rightMotorInput = (stickY - stickX) / 2;
+
+		// faster forward driving
 		if (stickX == 0) {
 			leftMotorInput = stickY * 0.8f;
 			rightMotorInput = stickY * 0.8f;
@@ -189,13 +192,6 @@ void GetMotorTargets(unsigned short& leftMotor, unsigned short& rightMotor) {
 		thisLeftMotor = Maps(leftMotorInput, GAMEPAD_MIN, GAMEPAD_MAX, LEFT_MOTOR_MIN, LEFT_MOTOR_MAX);
 		thisRightMotor = Maps(rightMotorInput, GAMEPAD_MIN, GAMEPAD_MAX, RIGHT_MOTOR_MIN, RIGHT_MOTOR_MAX);
 	}
-
-	//if (thisRightMotor > 6000) {
-	//	thisRightMotor -= 120;
-	//}
-	//else {
-	//	thisRightMotor += 60;
-	//}
 
 	leftMotor = thisLeftMotor;
 	rightMotor = thisRightMotor;
@@ -209,84 +205,21 @@ void GetServoTargets(unsigned short &yawServo, unsigned short &pitchServo, unsig
 	float yaw; float pitch; float roll;
 	orientation.GetEulerAngles<Axis_Y, Axis_X, Axis_Z>(&yaw, &pitch, &roll);
 
-	//if (abs(yaw) > HALF_PI && abs(roll) > HALF_PI) {
-	//	if (pitch >= 0) {
-	//		pitch = 2 * HALF_PI - pitch;
-	//	}
-	//	else {
-	//		pitch = -2 * HALF_PI - pitch;
-	//	}
-
-	//	if (roll >= 0) {
-	//		roll = PI - roll;
-	//	}
-	//	else {
-	//		roll = -PI - roll;
-	//	}
-	//}
-
-	//yaw = fmodf((yaw + PI), PI);
-
-	//if (HALF_PI <= abs(pitch) && HALF_PI <= abs(yaw)) {
-	//	yaw -= PI;
-	//}
-
-	//Vector3f lookAt = Vector3f(0.f, 0.f, 1.f);
-	//lookAt = orientation.Rotate(lookAt);
-
-	//printf("Lookat: X: %0.2f Y: %0.2f Z: %0.2f \n", lookAt.x, lookAt.y, lookAt.z);
-
-	//Vector3f axis = Vector3f(0.f, 0.f, 1.f);
-	//float angle;
-	//orientation.GetAxisAngle(&axis, &angle);
-
-	//printf("axis: X: %0.2f Y: %0.2f Z: %0.2f Angle %0.2f\n", axis.x, axis.y, axis.z, angle);
-
-	//Quatf testQuat = Quatf(lookAt, angle);
-	//testQuat.Invert();
-	//printf("X: %0.2f Y: %0.2f Z: %0.2f W: %0.2f \n", testQuat.x, testQuat.y, testQuat.z, testQuat.w);
-
-	//if (lookAt.z < 0) {
-	//	if (yaw > 0) {
-	//		yaw -= PI;
-	//	}
-	//	else {
-	//		yaw += PI;
-	//	}
-	//}
-
-
-
-	/*yaw = Clip(yaw, DegreeToRad(SERVO_ANGLE_MIN), DegreeToRad(SERVO_ANGLE_MAX));
-	pitch = Clip(pitch, DegreeToRad(SERVO_ANGLE_MIN), DegreeToRad(SERVO_ANGLE_MAX));*/
-	//pitch = 0;
-	//printf("YAW: %0.2f PITCH: %0.2f ROLL: %0.2f \n", yaw, pitch, roll);
-
-	//Vector3f lookAt = Vector3f(0.f, 0.f, 1.f);
-	//lookAt = orientation.Rotate(lookAt);
-
-	//float x2 = lookAt.x;
-	//float y2 = lookAt.y;
-	//float z2 = lookAt.z;
-
-	//printf("Positon: X: %0.2f Y: %0.2f Z: %0.2f \n", x2, y2, z2);
-
-
+	// calculate lookAt vector with euler angles for further angles tuning
 	float x = sin(yaw) * cos(pitch);
 	float y = -sin(pitch);
 	float z = cos(yaw) * cos(pitch);
 
-	//y = Clip(y, -0.5722f, 0.5722f);
 	printf("Vector: X: %0.2f Y: %0.2f Z: %0.2f \n", x, y, z);
 	printf("YAW: %0.2f PITCH: %0.2f ROLL: %0.2f \n", yaw*RADIANS_TO_DEGREES, pitch*RADIANS_TO_DEGREES, roll*RADIANS_TO_DEGREES);
 
+	// if head is looking back, normalize angles
 	if (z < 0)
 	{
 		if (abs(roll) > HALF_PI){
 			x = -x;
 			z = fabsf(z);
 		}
-		//y = -y;
 
 		if (roll > HALF_PI) {
 			roll = PI - roll;
@@ -294,19 +227,10 @@ void GetServoTargets(unsigned short &yawServo, unsigned short &pitchServo, unsig
 		else if (roll < -HALF_PI) {
 			roll = -PI - roll;
 		}
-		//roll = fmodf(roll + PI, 2 * PI) - PI;
 	}
-
 
 	yaw = atan2(x, z);
 	pitch = -atan2(y, sqrtf(z*z + x*x));
-
-	//yaw = atan2(y, x);
-	//pitch = acos(z / sqrtf(x*x + y*y + z*z));
-
-	///*yaw = fmodf(yaw + PI * 2, PI * 2);
-	//pitch = fmodf(pitch + PI * 2, PI * 2);*/
-
 
 	yaw *= RADIANS_TO_DEGREES;
 	pitch *= RADIANS_TO_DEGREES;
@@ -314,7 +238,7 @@ void GetServoTargets(unsigned short &yawServo, unsigned short &pitchServo, unsig
 
 	printf("YAW: %0.2f PITCH: %0.2f ROLL: %0.2f \n", yaw, pitch, roll);
 
-
+	// avoid fast jittering movements when looking to sky and further back
 	if (pitch > 50)
 	{
 		if (lastYawBeforeOutsideViewport == NULL){
@@ -352,31 +276,21 @@ void GetServoTargets(unsigned short &yawServo, unsigned short &pitchServo, unsig
 
 	printf("YAW: %0.2f PITCH: %0.2f ROLL: %0.2f \n", yaw, pitch, roll);
 
-	//if (abs(yaw) <= SERVO_ANGLE_MAX && abs(pitch) <= SERVO_ANGLE_MAX && abs(roll) <= SERVO_ANGLE_MAX) {
-
-	//if (abs(pitch) < 80.f || abs(pitch) > 100.f) {
 	yaw = Clip(yaw, SERVO_ANGLE_MIN, SERVO_ANGLE_MAX);
-	//if (yaw <= SERVO_ANGLE_MAX && yaw >= SERVO_ANGLE_MIN && (abs(pitch) < 80.f || abs(pitch) > 100.f) ){
 	yawServo = Mapf(yaw, -79, 79, YAW_SERVO_MIN, YAW_SERVO_MAX);
-	//}
 
 	pitch = Clip(pitch, SERVO_ANGLE_MIN, SERVO_ANGLE_MAX);
-	//if (pitch <= SERVO_ANGLE_MAX && pitch >= SERVO_ANGLE_MIN) {
 	pitchServo = Mapf(pitch, 79, -79, PITCH_SERVO_MIN, PITCH_SERVO_MAX);
-	//}
 
-	//if (roll <= SERVO_ANGLE_MAX && roll >= SERVO_ANGLE_MIN && (abs(pitch) < 77.f || abs(pitch) > 103.f)) {
+	// Avoid hitting the gimbal frame
 	if (pitch >= -79 && pitch <= -5) {
 		float rollMax = (-0.0003f * powf(pitch, 3)) - (0.0512f * powf(pitch, 2)) - 3.3477 * pitch - 90.803f;
-		printf("Roll max: %0.2f \n", rollMax);
+		printf("Roll max: %0.2f \n", rollMax)
 		roll = max(roll, rollMax);
 	}
+
 	roll = Clip(roll, -58, 58);
 	rollServo = Mapf(roll, 79, -79, ROLL_SERVO_MIN, ROLL_SERVO_MAX);
-	//}
-	//}
-
-	//}
 }
 
 //-----------------------------------------------------------------------------
@@ -384,21 +298,21 @@ BOOL CtrlHandler(DWORD fdwCtrlType)
 {
 	switch (fdwCtrlType)
 	{
-		// Handle the CTRL-C signal. 
+		// Handle the CTRL-C signal.
 	case CTRL_C_EVENT:
 		printf("Ctrl-C event\n\n");
 		terminateApp = true;
 		Sleep(3000);
 		return TRUE;
 
-		// CTRL-CLOSE: confirm that the user wants to exit. 
+		// CTRL-CLOSE: confirm that the user wants to exit.
 	case CTRL_CLOSE_EVENT:
 		printf("Ctrl-Close event\n\n");
 		terminateApp = true;
 		Sleep(3000);
 		return TRUE;
 
-		// Pass other signals to the next handler. 
+		// Pass other signals to the next handler.
 	case CTRL_BREAK_EVENT:
 		Beep(900, 200);
 		printf("Ctrl-Break event\n\n");
@@ -419,6 +333,7 @@ BOOL CtrlHandler(DWORD fdwCtrlType)
 	}
 }
 
+//-----------------------------------------------------------------------------
 void CheckForHotkey() {
 	if (_kbhit() != 0) {
 		// keycodes: http://msdn.microsoft.com/en-us/library/aa299374%28VS.60%29.aspx
